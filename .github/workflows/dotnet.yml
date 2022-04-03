@@ -1,0 +1,33 @@
+name: .NET
+
+on:
+  pull_request:
+    branches: [ main ]
+
+env:
+  PROJECT_FOLDER: 'Persistence.SharedLibrary'
+  PROJECT_FILE_PATH: 'Persistence.SharedLibrary/Persistence.SharedLibrary.csproj'
+  PACKAGE_OUTPUT_DIR: '${{ github.workspace }}/artefacts'
+  NUGET_SOURCE_URL: 'https://nuget.pkg.github.com/Kode4Hue/index.json'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build '${{ env.PROJECT_FILE_PATH }}' --configuration Release
+#     - name: Execute Tests
+#       run: dotnet test --no-build --verbosity normal
+    - name: Package the library
+      run: dotnet pack ${{ env.PROJECT_FILE_PATH }} --no-restore --no-build --configuration Release --output ${{ env.PACKAGE_OUTPUT_DIR }} 
+    - name: Publish the Package to Github
+      run: dotnet nuget push '${{ env.PACKAGE_OUTPUT_DIR }}/*.nupkg' -k ${{ secrets.NUGET_AUTH_TOKEN }} -s ${{ env.NUGET_SOURCE_URL }} --skip-duplicate
