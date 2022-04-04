@@ -8,6 +8,7 @@
     <Authors>Hubert Graham</Authors>
     <Company>Kode4Hue</Company>
     <Description>This is a shared library for resuable persistence related interfaces, classes and helpers</Description>
+    <RepositoryUrl>https://github.com/Kode4Hue/Persistence.SharedLibrary</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
